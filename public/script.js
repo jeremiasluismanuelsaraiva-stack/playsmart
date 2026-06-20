@@ -14,7 +14,7 @@ const url = document.getElementById("url").value.trim();
 
 if(!url){
 
-alert("Cole o link do YouTube");
+alert("Cole link YouTube, TikTok ou Facebook");
 
 return;
 
@@ -26,7 +26,7 @@ resultado.innerHTML = `
 
 <div class="card">
 
-⏳ A processar música...
+⏳ A processar...
 
 </div>
 
@@ -74,23 +74,28 @@ throw new Error(texto);
 
 if(!data.sucesso){
 
-throw new Error(data.erro);
+throw new Error(
+data.erro || "Erro desconhecido"
+);
 
 }
+
+
 
 
 
 const titulo =
 data.title ||
 data.titulo ||
-"YouTube";
-
+"Vídeo";
 
 
 const cantor =
 data.artist ||
 data.artista ||
-"Artista desconhecido";
+"Desconhecido";
+
+
 
 
 
@@ -111,7 +116,10 @@ resultado.innerHTML = `
 
 
 
-<audio controls autoplay style="width:100%;">
+<audio 
+controls 
+autoplay
+style="width:100%;">
 
 <source 
 src="${data.download}"
@@ -142,7 +150,10 @@ target="_blank">
 
 
 
-}else{
+}
+
+else{
+
 
 
 resultado.innerHTML = `
@@ -158,15 +169,25 @@ resultado.innerHTML = `
 
 
 
-<video controls autoplay width="100%">
 
-<source
-src="${data.download}"
-type="video/mp4">
+<video
+
+controls
+
+autoplay
+
+playsinline
+
+style="width:100%;"
+
+src="${data.download}">
+
 
 Seu navegador não suporta vídeo.
 
+
 </video>
+
 
 
 
@@ -175,12 +196,17 @@ Seu navegador não suporta vídeo.
 
 
 <a 
+
 href="${data.download}"
+
 target="_blank">
 
-⬇️ Baixar MP4
+
+⬇️ Abrir Vídeo
+
 
 </a>
+
 
 
 </div>
@@ -188,11 +214,16 @@ target="_blank">
 
 `;
 
+
+
 }
 
 
 
+
+
 }catch(e){
+
 
 
 resultado.innerHTML = `
@@ -201,17 +232,23 @@ resultado.innerHTML = `
 
 ❌ Erro:
 
+<br>
+
 ${e.message}
 
 </div>
 
 `;
 
+
+
+}
+
+
 }
 
 
 
-}
 
 
 
