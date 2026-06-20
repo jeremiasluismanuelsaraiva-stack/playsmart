@@ -1,26 +1,26 @@
 console.log("SCRIPT CARREGADO");
 
 
-let musicas = [];
-let atual = 0;
+let musicas=[];
+let atual=0;
 
 
-const lista = document.getElementById("lista");
-const audio = document.getElementById("audio");
-const titulo = document.getElementById("titulo");
+const lista=document.getElementById("lista");
+const audio=document.getElementById("audio");
+const titulo=document.getElementById("titulo");
 
 
 
 function render(){
 
 
-lista.innerHTML = "";
+lista.innerHTML="";
 
 
 musicas.forEach((m,i)=>{
 
 
-lista.innerHTML += `
+lista.innerHTML+=`
 
 <div class="card">
 
@@ -34,7 +34,7 @@ lista.innerHTML += `
 </button>
 
 
-<button onclick="verVideo(${i})">
+<button onclick="video(${i})">
 🎬 Assistir
 </button>
 
@@ -51,18 +51,16 @@ lista.innerHTML += `
 
 
 
-
 async function pesquisar(){
 
 
-const q = 
-document.getElementById("busca").value.trim();
+let q=document.getElementById("busca").value.trim();
 
 
 
 if(!q){
 
-alert("Digite música ou link");
+alert("Escreva algo");
 
 return;
 
@@ -70,15 +68,14 @@ return;
 
 
 
-lista.innerHTML =
-"⏳ A pesquisar...";
+lista.innerHTML="⏳ A carregar...";
 
 
 
 try{
 
 
-const res = await fetch(
+let r=await fetch(
 
 "/api/musica?q="+
 encodeURIComponent(q)
@@ -87,19 +84,14 @@ encodeURIComponent(q)
 
 
 
-const data = await res.json();
+let txt=await r.text();
+
+
+let data=JSON.parse(txt);
 
 
 
-if(!data.length){
-
-throw new Error("Nenhum resultado");
-
-}
-
-
-
-musicas = data;
+musicas=data;
 
 
 render();
@@ -109,7 +101,8 @@ render();
 }catch(e){
 
 
-lista.innerHTML =
+lista.innerHTML=
+
 "❌ "+e.message;
 
 
@@ -121,24 +114,17 @@ lista.innerHTML =
 
 
 
-
-
 async function tocar(i){
 
 
-atual = i;
+atual=i;
+
+
+titulo.innerHTML="⏳ Baixando...";
 
 
 
-titulo.innerHTML =
-"⏳ Preparando "+musicas[i].nome;
-
-
-
-try{
-
-
-const res = await fetch(
+let r=await fetch(
 
 "/api/baixar?url="+
 encodeURIComponent(musicas[i].url)+
@@ -148,65 +134,49 @@ encodeURIComponent(musicas[i].url)+
 
 
 
-const data = await res.json();
+let data=await r.json();
 
 
 
-if(!data.sucesso){
+if(!data.download){
 
-throw new Error(data.erro);
+alert(data.erro);
+
+return;
 
 }
 
 
 
-audio.src = data.download;
+audio.src=data.download;
 
 
-
-titulo.innerHTML =
+titulo.innerHTML=
 
 "🎵 "+musicas[i].nome+
-"<br>🎤 "+musicas[i].artista;
+" | 🎤 "+musicas[i].artista;
 
 
 
 audio.play();
 
 
-
-}catch(e){
-
-
-alert(
-"❌ "+e.message
-);
-
-
-}
-
-
 }
 
 
 
 
 
-
-function verVideo(i){
+function video(i){
 
 
 window.open(
-
 musicas[i].url,
-
 "_blank"
-
 );
 
 
 }
-
 
 
 
@@ -227,17 +197,30 @@ tocar(atual);
 
 
 
-
-
 function anterior(){
 
 
-if(atual > 0){
+if(atual>0){
 
 atual--;
 
 tocar(atual);
 
 }
+
+}
+
+
+
+
+function limpar(){
+
+musicas=[];
+
+lista.innerHTML="";
+
+audio.src="";
+
+titulo.innerHTML="Nenhuma música";
 
 }
