@@ -1,175 +1,79 @@
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Arial, Helvetica, sans-serif;
-}
+<!DOCTYPE html>
+<html lang="pt">
 
+<head>
 
-body{
+<meta charset="UTF-8">
 
-    background:linear-gradient(135deg,#1db954,#121212);
-    color:white;
-    min-height:100vh;
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    display:flex;
-    justify-content:center;
-    align-items:center;
+<title>🎵 YouTube Player CyberHost</title>
 
-    padding:20px;
 
-}
+<link rel="stylesheet" href="style.css">
 
 
+</head>
 
-.container{
 
-    width:100%;
-    max-width:600px;
+<body>
 
-    background:#1e1e1e;
 
-    padding:30px;
+<div class="container">
 
-    border-radius:18px;
 
-    text-align:center;
+<h1>🎵 Meu Player</h1>
 
-    box-shadow:0 0 25px rgba(0,0,0,.5);
 
-}
 
+<input 
+id="url"
+placeholder="Cole link do YouTube">
 
 
-h1{
 
-    color:#1db954;
-    margin-bottom:25px;
+<div>
 
-}
+<button onclick="baixarAudio()">
 
+🎧 MP3
 
+</button>
 
-input{
 
-    width:100%;
+<button onclick="baixarVideo()">
 
-    padding:14px;
+🎬 MP4
 
-    border:none;
+</button>
 
-    outline:none;
+</div>
 
-    border-radius:10px;
 
-    font-size:16px;
 
-    margin-bottom:15px;
 
-}
+<div id="resultado">
 
 
+<div class="card">
 
-.buttons{
+🎵 Nenhuma música carregada
 
-    display:flex;
+</div>
 
-    justify-content:center;
 
-    gap:10px;
+</div>
 
-    flex-wrap:wrap;
 
-}
 
+</div>
 
 
-button{
 
-    padding:13px 25px;
 
-    border:none;
+<script src="script.js"></script>
 
-    border-radius:10px;
 
-    cursor:pointer;
+</body>
 
-    background:#1db954;
-
-    color:white;
-
-    font-weight:bold;
-
-    font-size:15px;
-
-    transition:.3s;
-
-}
-
-
-
-button:hover{
-
-    transform:scale(1.05);
-
-    background:#159442;
-
-}
-
-
-
-#resultado,
-#lista{
-
-    margin-top:25px;
-
-}
-
-
-
-.card{
-
-    background:#292929;
-
-    padding:20px;
-
-    border-radius:12px;
-
-    margin-top:15px;
-
-}
-
-
-
-audio,
-video{
-
-    width:100%;
-
-    margin-top:15px;
-
-}
-
-
-
-a{
-
-    display:inline-block;
-
-    margin-top:15px;
-
-    color:#1db954;
-
-    font-weight:bold;
-
-    text-decoration:none;
-
-}
-
-
-
-a:hover{
-
-    text-decoration:underline;
-
-}
+</html>
