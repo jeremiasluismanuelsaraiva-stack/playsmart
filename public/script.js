@@ -1,28 +1,20 @@
 console.log("SCRIPT CARREGADO");
 
 
-let musicas=[];
-let atual=0;
+let musicas = [];
+let atual = 0;
 
 
-const lista =
-document.getElementById("lista");
-
-
-const audio =
-document.getElementById("audio");
-
-
-const titulo =
-document.getElementById("titulo");
-
+const lista = document.getElementById("lista");
+const audio = document.getElementById("audio");
+const titulo = document.getElementById("titulo");
 
 
 
 function mostrar(){
 
 
-lista.innerHTML="";
+lista.innerHTML = "";
 
 
 musicas.forEach((m,i)=>{
@@ -30,34 +22,28 @@ musicas.forEach((m,i)=>{
 
 lista.innerHTML += `
 
-
 <div class="card">
 
 
 <h3>🎵 ${m.nome}</h3>
 
-
 <p>🎤 ${m.artista}</p>
 
 
 <button onclick="tocar(${i})">
-
 ▶️ Escutar
-
 </button>
 
 
 <button onclick="video(${i})">
-
-🎬 Vídeo
-
+🎬 Assistir
 </button>
 
 
 </div>
 
-
 `;
+
 
 });
 
@@ -67,21 +53,17 @@ lista.innerHTML += `
 
 
 
-
-
-
 async function pesquisar(){
 
 
-
-let q =
+const q =
 document.getElementById("busca").value.trim();
 
 
 
 if(!q){
 
-alert("Digite música ou link");
+alert("Digite cantor ou link");
 
 return;
 
@@ -89,14 +71,15 @@ return;
 
 
 
-lista.innerHTML="⏳ Pesquisando...";
+lista.innerHTML =
+"⏳ A pesquisar...";
 
 
 
 try{
 
 
-let res = await fetch(
+const res = await fetch(
 
 "/api/musica?q="+
 encodeURIComponent(q)
@@ -105,17 +88,43 @@ encodeURIComponent(q)
 
 
 
-let texto =
-await res.text();
+const texto = await res.text();
+
+
+console.log(
+"RESPOSTA API:",
+texto
+);
 
 
 
-let data =
-JSON.parse(texto);
+let data;
 
 
 
-musicas=data;
+try{
+
+data = JSON.parse(texto);
+
+}catch(e){
+
+throw new Error(
+"API respondeu: "+texto
+);
+
+}
+
+
+
+if(data.erro){
+
+throw new Error(data.erro);
+
+}
+
+
+
+musicas = data;
 
 
 
@@ -133,8 +142,8 @@ lista.innerHTML =
 }
 
 
-
 }
+
 
 
 
@@ -144,17 +153,18 @@ lista.innerHTML =
 async function tocar(i){
 
 
-atual=i;
-
+atual = i;
 
 
 titulo.innerHTML =
-"⏳ A preparar...";
+"⏳ A baixar áudio...";
 
 
 
-let res =
-await fetch(
+try{
+
+
+const res = await fetch(
 
 "/api/baixar?url="+
 encodeURIComponent(musicas[i].url)+
@@ -164,22 +174,37 @@ encodeURIComponent(musicas[i].url)+
 
 
 
-let data =
-await res.json();
+const texto =
+await res.text();
 
 
 
-if(!data.download){
+let data;
 
-alert(data.erro);
 
-return;
+try{
+
+data = JSON.parse(texto);
+
+}catch(e){
+
+throw new Error(texto);
 
 }
 
 
 
-audio.src=data.download;
+if(!data.download){
+
+throw new Error(
+data.erro || "Sem ficheiro"
+);
+
+}
+
+
+
+audio.src = data.download;
 
 
 titulo.innerHTML =
@@ -193,8 +218,17 @@ audio.play();
 
 
 
+}catch(e){
+
+
+titulo.innerHTML =
+"❌ "+e.message;
+
+
 }
 
+
+}
 
 
 
@@ -234,12 +268,10 @@ tocar(atual);
 
 
 
-
-
 function anterior(){
 
 
-if(atual>0){
+if(atual > 0){
 
 atual--;
 
