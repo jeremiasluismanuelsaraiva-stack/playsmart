@@ -1,24 +1,19 @@
-const fetch = require("node-fetch");
-
-
 const API = "https://api.cyberhost.online";
 
 const KEY = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
 
 
-module.exports = async(req,res)=>{
-
+export default async function handler(req,res){
 
 try{
 
 
-const url = req.query.url;
-const tipo = req.query.tipo || "audio";
+const {url,tipo} = req.query;
 
 
 if(!url){
 
-return res.json({
+return res.status(400).json({
 erro:"Sem link"
 });
 
@@ -26,9 +21,9 @@ erro:"Sem link"
 
 
 
-const r = await fetch(
+const resposta = await fetch(
 
-API+"/youtube/download",
+API + "/youtube/download",
 
 {
 
@@ -39,7 +34,6 @@ headers:{
 "Content-Type":"application/json"
 
 },
-
 
 body:JSON.stringify({
 
@@ -61,33 +55,13 @@ quality:"720"
 
 })
 
-});
-
-
-const texto = await r.text();
-
-
-console.log(texto);
-
-
-
-let data;
-
-
-try{
-
-data = JSON.parse(texto);
-
-}catch(e){
-
-return res.json({
-
-erro:"CyberHost respondeu inválido",
-resposta:texto
-
-});
-
 }
+
+);
+
+
+
+const data = await resposta.json();
 
 
 
@@ -97,7 +71,7 @@ return res.json({
 
 erro:"CyberHost sem ficheiro",
 
-dados:data
+retorno:data
 
 });
 
@@ -105,12 +79,16 @@ dados:data
 
 
 
-const link =
-data.file.startsWith("http")
-?
-data.file
-:
-API+"/youtube"+data.file;
+let link = data.file;
+
+
+
+if(!link.startsWith("http")){
+
+link =
+API+"/youtube"+link;
+
+}
 
 
 
@@ -127,7 +105,7 @@ download:link
 }catch(e){
 
 
-return res.json({
+return res.status(500).json({
 
 erro:e.message
 
