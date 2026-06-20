@@ -5,13 +5,21 @@ let musicas=[];
 let atual=0;
 
 
-const lista=document.getElementById("lista");
-const audio=document.getElementById("audio");
-const titulo=document.getElementById("titulo");
+const lista =
+document.getElementById("lista");
+
+
+const audio =
+document.getElementById("audio");
+
+
+const titulo =
+document.getElementById("titulo");
 
 
 
-function render(){
+
+function mostrar(){
 
 
 lista.innerHTML="";
@@ -20,26 +28,34 @@ lista.innerHTML="";
 musicas.forEach((m,i)=>{
 
 
-lista.innerHTML+=`
+lista.innerHTML += `
+
 
 <div class="card">
 
+
 <h3>🎵 ${m.nome}</h3>
+
 
 <p>🎤 ${m.artista}</p>
 
 
 <button onclick="tocar(${i})">
+
 ▶️ Escutar
+
 </button>
 
 
 <button onclick="video(${i})">
-🎬 Assistir
+
+🎬 Vídeo
+
 </button>
 
 
 </div>
+
 
 `;
 
@@ -51,16 +67,21 @@ lista.innerHTML+=`
 
 
 
+
+
+
 async function pesquisar(){
 
 
-let q=document.getElementById("busca").value.trim();
+
+let q =
+document.getElementById("busca").value.trim();
 
 
 
 if(!q){
 
-alert("Escreva algo");
+alert("Digite música ou link");
 
 return;
 
@@ -68,14 +89,14 @@ return;
 
 
 
-lista.innerHTML="⏳ A carregar...";
+lista.innerHTML="⏳ Pesquisando...";
 
 
 
 try{
 
 
-let r=await fetch(
+let res = await fetch(
 
 "/api/musica?q="+
 encodeURIComponent(q)
@@ -84,32 +105,38 @@ encodeURIComponent(q)
 
 
 
-let txt=await r.text();
+let texto =
+await res.text();
 
 
-let data=JSON.parse(txt);
+
+let data =
+JSON.parse(texto);
 
 
 
 musicas=data;
 
 
-render();
+
+mostrar();
 
 
 
 }catch(e){
 
 
-lista.innerHTML=
-
+lista.innerHTML =
 "❌ "+e.message;
 
 
 }
 
 
+
 }
+
+
 
 
 
@@ -120,11 +147,14 @@ async function tocar(i){
 atual=i;
 
 
-titulo.innerHTML="⏳ Baixando...";
+
+titulo.innerHTML =
+"⏳ A preparar...";
 
 
 
-let r=await fetch(
+let res =
+await fetch(
 
 "/api/baixar?url="+
 encodeURIComponent(musicas[i].url)+
@@ -134,7 +164,8 @@ encodeURIComponent(musicas[i].url)+
 
 
 
-let data=await r.json();
+let data =
+await res.json();
 
 
 
@@ -151,17 +182,20 @@ return;
 audio.src=data.download;
 
 
-titulo.innerHTML=
+titulo.innerHTML =
 
 "🎵 "+musicas[i].nome+
-" | 🎤 "+musicas[i].artista;
+"<br>🎤 "+musicas[i].artista;
 
 
 
 audio.play();
 
 
+
 }
+
+
 
 
 
@@ -171,8 +205,11 @@ function video(i){
 
 
 window.open(
+
 musicas[i].url,
+
 "_blank"
+
 );
 
 
@@ -197,6 +234,8 @@ tocar(atual);
 
 
 
+
+
 function anterior(){
 
 
@@ -207,20 +246,5 @@ atual--;
 tocar(atual);
 
 }
-
-}
-
-
-
-
-function limpar(){
-
-musicas=[];
-
-lista.innerHTML="";
-
-audio.src="";
-
-titulo.innerHTML="Nenhuma música";
 
 }
