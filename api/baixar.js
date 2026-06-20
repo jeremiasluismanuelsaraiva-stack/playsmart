@@ -1,39 +1,58 @@
-
-
 const https = require("https");
 
+
 const API_CYBERHOST = "https://api.cyberhost.online";
-const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
+
+const API_KEY_CYBERHOST =
+"cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
 
 
-function postCyber(body){
+
+function postCyber(endpoint, body){
 
 return new Promise((resolve,reject)=>{
 
 
-const data = JSON.stringify(body);
+const data = JSON.stringify({
+
+api_key: API_KEY_CYBERHOST,
+
+...body
+
+});
+
 
 
 const req = https.request(
-API_CYBERHOST + "/youtube/download",
+
+API_CYBERHOST + endpoint,
+
 {
+
 method:"POST",
+
 headers:{
+
 "Content-Type":"application/json",
+
 "Content-Length":Buffer.byteLength(data)
+
 }
+
 },
+
+
 (res)=>{
+
 
 let result="";
 
 
-res.on("data",chunk=>{
-result += chunk;
-});
+res.on("data",c=>result+=c);
 
 
 res.on("end",()=>{
+
 
 try{
 
@@ -45,7 +64,9 @@ reject(new Error(result));
 
 }
 
+
 });
+
 
 });
 
@@ -60,11 +81,15 @@ req.end();
 
 });
 
+
 }
 
 
 
-module.exports = async (req,res)=>{
+
+
+
+module.exports = async(req,res)=>{
 
 
 res.setHeader(
@@ -82,44 +107,126 @@ const url = req.query.url;
 const tipo = req.query.tipo || "audio";
 
 
+
 if(!url){
 
 return res.json({
+
 sucesso:false,
+
 erro:"Sem URL"
+
 });
 
 }
 
 
 
-const data = await postCyber({
 
-api_key:API_KEY_CYBERHOST,
+let endpoint;
 
-url:url,
+let body={
 
-type:
+url:url
+
+};
+
+
+
+
+
+// YOUTUBE
+
+if(
+url.includes("youtube.com") ||
+url.includes("youtu.be")
+){
+
+endpoint="/youtube/download";
+
+
+body.type =
 tipo==="video"
-?
-"video"
-:
-"audio",
+?"video"
+:"audio";
 
-format:
+
+body.format =
 tipo==="video"
-?
-"mp4"
-:
-"mp3",
+?"mp4"
+:"mp3";
 
-quality:"720"
+
+body.quality="720";
+
+
+}
+
+
+
+
+
+// TIKTOK
+
+else if(
+url.includes("tiktok.com")
+){
+
+
+endpoint="/tiktok/download";
+
+
+}
+
+
+
+
+
+
+// FACEBOOK
+
+else if(
+
+url.includes("facebook.com") ||
+url.includes("fb.watch")
+
+){
+
+
+endpoint="/facebook/download";
+
+
+}
+
+else{
+
+
+return res.json({
+
+sucesso:false,
+
+erro:"Link não suportado"
 
 });
 
 
+}
 
-if(!data.file){
+
+
+
+
+const data = await postCyber(
+endpoint,
+body
+);
+
+
+
+
+
+if(!data.file && !data.url && !data.download){
+
 
 return res.json({
 
@@ -131,21 +238,35 @@ resposta:data
 
 });
 
+
 }
 
 
 
-let link=data.file;
 
 
-if(!link.startsWith("http")){
+let link =
+data.file ||
+data.url ||
+data.download;
+
+
+
+
+
+if(
+link &&
+!link.startsWith("http")
+){
+
 
 link =
-API_CYBERHOST +
-"/youtube" +
-link;
+API_CYBERHOST + link;
+
 
 }
+
+
 
 
 
@@ -159,6 +280,8 @@ download:link
 
 
 
+
+
 }catch(e){
 
 
@@ -169,6 +292,7 @@ sucesso:false,
 erro:e.message
 
 });
+
 
 }
 
