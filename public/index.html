@@ -4,14 +4,11 @@
 <head>
 
 <meta charset="UTF-8">
-
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>🎵 Meu PlayerSmart</title>
-
+<title>🎵 Meu Player</title>
 
 <link rel="stylesheet" href="style.css">
-
 
 </head>
 
@@ -25,10 +22,49 @@
 <h1>🎵 Meu Player</h1>
 
 
+<div id="loginArea">
+
+<input id="email" placeholder="Gmail">
+
+<input id="senha" type="password" placeholder="Senha">
+
+
+<button onclick="criarConta()">
+Criar Conta
+</button>
+
+
+<button onclick="entrar()">
+Entrar
+</button>
+
+
+<button onclick="googleLogin()">
+🔵 Google
+</button>
+
+</div>
+
+
+
+<div id="userArea" style="display:none">
+
+
+<p id="usuario"></p>
+
+<button onclick="sair()">
+Sair
+</button>
+
+
+</div>
+
+
+
 
 <input 
 id="url"
-placeholder="Cole link YouTube, TikTok ou Facebook">
+placeholder="Cole YouTube, TikTok ou Facebook">
 
 
 
@@ -36,17 +72,12 @@ placeholder="Cole link YouTube, TikTok ou Facebook">
 
 
 <button onclick="baixarAudio()">
-
 🎧 Áudio
-
 </button>
 
 
-
 <button onclick="baixarVideo()">
-
 🎬 Vídeo
-
 </button>
 
 
@@ -57,14 +88,21 @@ placeholder="Cole link YouTube, TikTok ou Facebook">
 
 <div id="resultado">
 
-
 <div class="card">
 
 🎵 Nenhum link carregado
 
-<br>
+</div>
 
-⚡ YouTube | TikTok | Facebook
+</div>
+
+
+
+
+<div id="historico">
+
+<h2>📜 Histórico</h2>
+
 
 </div>
 
@@ -73,16 +111,10 @@ placeholder="Cole link YouTube, TikTok ou Facebook">
 
 
 
-</div>
 
-
-
-
-
-<script src="script.js"></script>
+<script type="module" src="script.js"></script>
 
 
 </body>
 
-
-</html>
+</html> organize bem nao estraggue
