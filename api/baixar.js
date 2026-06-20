@@ -2,7 +2,7 @@ const fetch = require("node-fetch");
 
 
 const API_CYBERHOST = "https://api.cyberhost.online";
-const API_KEY_CYBERHOST = "SUA_API_KEY_AQUI";
+const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
 
 
 async function cyberPost(endpoint, body={}){
