@@ -1,20 +1,189 @@
 console.log("SCRIPT CARREGADO");
 
 
-const resultado = document.getElementById("resultado");
+let musicas = [];
+let atual = 0;
+
+
+const lista = document.getElementById("lista");
+const audio = document.getElementById("audio");
+const titulo = document.getElementById("titulo");
 
 
 
-async function baixar(tipo){
+// 🎯 EXEMPLO INICIAL (podes remover depois)
+musicas = [
+{
+nome: "Matuê - Conexões",
+artista: "Matuê",
+audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+video: "https://www.w3schools.com/html/mov_bbb.mp4"
+},
+{
+nome: "Teto - Sample",
+artista: "Teto",
+audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+video: "https://www.w3schools.com/html/movie.mp4"
+},
+{
+nome: "WIU - Sample",
+artista: "WIU",
+audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
+video: "https://www.w3schools.com/html/mov_bbb.mp4"
+}
+];
 
 
-const url = document.getElementById("url").value.trim();
+
+// 🔥 render lista
+function render(){
+
+lista.innerHTML = "";
+
+
+musicas.forEach((m,i)=>{
+
+
+lista.innerHTML += `
+
+<div class="card">
+
+<h3>🎵 ${m.nome}</h3>
+
+<p>🎤 ${m.artista}</p>
+
+
+<button onclick="tocar(${i})">
+
+▶️ Escutar
+
+</button>
+
+
+<button onclick="assistir(${i})">
+
+🎬 Ver vídeo
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
 
 
 
-if(!url){
+// ▶️ tocar música
+function tocar(i){
 
-alert("Cole o link do YouTube");
+atual = i;
+
+audio.src = musicas[i].audio;
+
+titulo.innerHTML = "🎵 " + musicas[i].nome;
+
+audio.play();
+
+}
+
+
+
+// 🎬 assistir vídeo
+function assistir(i){
+
+atual = i;
+
+
+lista.innerHTML = `
+
+<div class="card">
+
+<h2>${musicas[i].nome}</h2>
+
+<video controls autoplay>
+
+<source src="${musicas[i].video}" type="video/mp4">
+
+</video>
+
+
+<br><br>
+
+<button onclick="render()">
+
+⬅️ Voltar lista
+
+</button>
+
+</div>
+
+`;
+
+}
+
+
+
+// ⏭️ próxima
+function proxima(){
+
+if(atual < musicas.length - 1){
+
+atual++;
+
+tocar(atual);
+
+}
+
+}
+
+
+
+// ⏮️ anterior
+function anterior(){
+
+if(atual > 0){
+
+atual--;
+
+tocar(atual);
+
+}
+
+}
+
+
+
+// 🔎 pesquisa (futuro API)
+async function pesquisar(){
+
+const q = document.getElementById("busca").value.trim();
+
+
+if(!q) return;
+
+
+
+lista.innerHTML = `<div class="card">🔎 A pesquisar...</div>`;
+
+
+
+try{
+
+
+const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
+
+const data = await res.json();
+
+
+// se API existir
+if(Array.isArray(data)){
+
+musicas = data;
+
+render();
 
 return;
 
@@ -22,211 +191,22 @@ return;
 
 
 
-resultado.innerHTML = `
-
-<div class="card">
-
-⏳ A processar música...
-
-</div>
-
-`;
-
-
-
-try{
-
-
-const resposta = await fetch(
-
-"/api/baixar?url=" +
-encodeURIComponent(url) +
-"&tipo=" +
-tipo
-
-);
-
-
-
-const texto = await resposta.text();
-
-
-
-console.log("RESPOSTA API:", texto);
-
-
-
-let data;
-
-
-try{
-
-data = JSON.parse(texto);
-
-}catch(e){
-
-throw new Error(texto);
-
-}
-
-
-
-
-if(!data.sucesso){
-
-throw new Error(data.erro);
-
-}
-
-
-
-const titulo =
-data.title ||
-data.titulo ||
-"YouTube";
-
-
-
-const cantor =
-data.artist ||
-data.artista ||
-"Artista desconhecido";
-
-
-
-
-
-if(tipo === "audio"){
-
-
-resultado.innerHTML = `
-
-<div class="card">
-
-
-<h2>🎵 ${titulo}</h2>
-
-
-<p>🎤 ${cantor}</p>
-
-
-
-<audio controls autoplay style="width:100%;">
-
-<source 
-src="${data.download}"
-type="audio/mpeg">
-
-Seu navegador não suporta áudio.
-
-</audio>
-
-
-
-<br><br>
-
-
-
-<a 
-href="${data.download}"
-target="_blank">
-
-⬇️ Baixar MP3
-
-</a>
-
-
-</div>
-
-`;
-
-
-
-}else{
-
-
-resultado.innerHTML = `
-
-
-<div class="card">
-
-
-<h2>🎬 ${titulo}</h2>
-
-
-<p>🎤 ${cantor}</p>
-
-
-
-<video controls autoplay width="100%">
-
-<source
-src="${data.download}"
-type="video/mp4">
-
-Seu navegador não suporta vídeo.
-
-</video>
-
-
-
-<br><br>
-
-
-
-<a 
-href="${data.download}"
-target="_blank">
-
-⬇️ Baixar MP4
-
-</a>
-
-
-</div>
-
-
-`;
-
-}
-
+// fallback
+lista.innerHTML = `<div class="card">❌ Sem resultados</div>`;
 
 
 }catch(e){
 
 
-resultado.innerHTML = `
+// fallback offline
+lista.innerHTML = `<div class="card">⚠️ API de pesquisa não ativa</div>`;
 
-<div class="card">
 
-❌ Erro:
-
-${e.message}
-
-</div>
-
-`;
+}
 
 }
 
 
 
-}
-
-
-
-
-function baixarAudio(){
-
-baixar("audio");
-
-}
-
-
-
-
-function baixarVideo(){
-
-baixar("video");
-
-}
+// iniciar
+render();
