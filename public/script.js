@@ -4,45 +4,16 @@ console.log("SCRIPT CARREGADO");
 let musicas = [];
 let atual = 0;
 
-
 const lista = document.getElementById("lista");
 const audio = document.getElementById("audio");
 const titulo = document.getElementById("titulo");
 
 
-
-// 🎯 EXEMPLO INICIAL (podes remover depois)
-musicas = [
-{
-nome: "Matuê - Conexões",
-artista: "Matuê",
-audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
-video: "https://www.w3schools.com/html/mov_bbb.mp4"
-},
-{
-nome: "Teto - Sample",
-artista: "Teto",
-audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
-video: "https://www.w3schools.com/html/movie.mp4"
-},
-{
-nome: "WIU - Sample",
-artista: "WIU",
-audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3",
-video: "https://www.w3schools.com/html/mov_bbb.mp4"
-}
-];
-
-
-
-// 🔥 render lista
 function render(){
 
 lista.innerHTML = "";
 
-
 musicas.forEach((m,i)=>{
-
 
 lista.innerHTML += `
 
@@ -52,18 +23,12 @@ lista.innerHTML += `
 
 <p>🎤 ${m.artista}</p>
 
-
 <button onclick="tocar(${i})">
-
 ▶️ Escutar
-
 </button>
 
-
-<button onclick="assistir(${i})">
-
-🎬 Ver vídeo
-
+<button onclick="verVideo(${i})">
+🎬 Ver
 </button>
 
 </div>
@@ -76,14 +41,14 @@ lista.innerHTML += `
 
 
 
-// ▶️ tocar música
 function tocar(i){
 
 atual = i;
 
 audio.src = musicas[i].audio;
 
-titulo.innerHTML = "🎵 " + musicas[i].nome;
+titulo.innerHTML =
+"🎵 " + musicas[i].nome;
 
 audio.play();
 
@@ -91,45 +56,9 @@ audio.play();
 
 
 
-// 🎬 assistir vídeo
-function assistir(i){
-
-atual = i;
-
-
-lista.innerHTML = `
-
-<div class="card">
-
-<h2>${musicas[i].nome}</h2>
-
-<video controls autoplay>
-
-<source src="${musicas[i].video}" type="video/mp4">
-
-</video>
-
-
-<br><br>
-
-<button onclick="render()">
-
-⬅️ Voltar lista
-
-</button>
-
-</div>
-
-`;
-
-}
-
-
-
-// ⏭️ próxima
 function proxima(){
 
-if(atual < musicas.length - 1){
+if(atual < musicas.length-1){
 
 atual++;
 
@@ -141,7 +70,6 @@ tocar(atual);
 
 
 
-// ⏮️ anterior
 function anterior(){
 
 if(atual > 0){
@@ -156,34 +84,17 @@ tocar(atual);
 
 
 
-// 🔎 pesquisa (futuro API)
 async function pesquisar(){
 
-const q = document.getElementById("busca").value.trim();
 
-
-if(!q) return;
-
-
-
-lista.innerHTML = `<div class="card">🔎 A pesquisar...</div>`;
+const q =
+document.getElementById("busca").value.trim();
 
 
 
-try{
+if(!q){
 
-
-const res = await fetch(`/api/search?q=${encodeURIComponent(q)}`);
-
-const data = await res.json();
-
-
-// se API existir
-if(Array.isArray(data)){
-
-musicas = data;
-
-render();
+alert("Digite uma música");
 
 return;
 
@@ -191,22 +102,83 @@ return;
 
 
 
-// fallback
-lista.innerHTML = `<div class="card">❌ Sem resultados</div>`;
+lista.innerHTML =
+"⏳ A carregar...";
+
+
+
+try{
+
+
+// usa link do youtube na pesquisa
+const url = q;
+
+
+
+const res = await fetch(
+"/api/baixar?url=" +
+encodeURIComponent(url) +
+"&tipo=audio"
+);
+
+
+
+const data = await res.json();
+
+
+
+if(!data.sucesso){
+
+throw new Error(data.erro);
+
+}
+
+
+
+musicas.push({
+
+nome:q,
+
+artista:"YouTube",
+
+audio:data.download
+
+});
+
+
+
+render();
+
+
+
+tocar(musicas.length-1);
+
 
 
 }catch(e){
 
 
-// fallback offline
-lista.innerHTML = `<div class="card">⚠️ API de pesquisa não ativa</div>`;
+lista.innerHTML =
+"❌ "+e.message;
 
 
 }
 
+
 }
 
 
 
-// iniciar
+function verVideo(i){
+
+
+window.open(
+musicas[i].audio,
+"_blank"
+);
+
+
+}
+
+
 render();
