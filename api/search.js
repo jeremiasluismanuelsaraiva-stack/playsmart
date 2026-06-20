@@ -1,113 +1,28 @@
 const fetch = require("node-fetch");
 
 
-const API_CYBERHOST = "https://api.cyberhost.online";
-
-const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
-
-
 module.exports = async (req,res)=>{
 
 
-res.setHeader(
-"Content-Type",
-"application/json"
-);
+res.setHeader("Content-Type","application/json");
 
 
 try{
 
 
-const q = req.query.q;
+return res.json({
 
+ok:true,
 
-if(!q){
+mensagem:"search funcionando"
 
-return res.json([]);
-
-}
-
-
-
-const r = await fetch(
-
-`${API_CYBERHOST}/youtube/search`,
-
-{
-
-method:"POST",
-
-headers:{
-
-"Content-Type":"application/json"
-
-},
-
-body: JSON.stringify({
-
-api_key: API_KEY_CYBERHOST,
-
-query: q,
-
-limit: 10
-
-})
-
-}
-
-);
-
-
-
-const data = await r.json();
-
-
-
-const lista =
-data.results ||
-data.data ||
-[];
-
-
-
-const resposta = lista.map(x=>({
-
-
-nome:
-x.title ||
-x.name ||
-"Sem título",
-
-
-
-artista:
-x.channel ||
-x.artist ||
-"YouTube",
-
-
-
-url:
-x.url ||
-x.videoUrl ||
-x.link ||
-x.webpage_url ||
-x.video
-
-
-
-}));
-
-
-
-res.json(resposta);
-
+});
 
 
 }catch(e){
 
 
-res.status(500).json({
+return res.status(500).json({
 
 erro:e.message
 
