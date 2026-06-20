@@ -1,7 +1,7 @@
 const https = require("https");
 
 const API_CYBERHOST = "https://api.cyberhost.online";
-const API_KEY_CYBERHOST = "COLOCA_KEY_AQUI";
+const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
 
 
 function postCyber(body){
