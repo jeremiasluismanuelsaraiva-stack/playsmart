@@ -1,47 +1,56 @@
-<!DOCTYPE html>
-<html lang="pt">
-
-<head>
-
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>🎵 Meu Player</title>
-
-<style>
-
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
 }
 
 
 body{
 
-background:#121212;
-color:white;
-padding:20px;
-padding-bottom:150px;
+    background:linear-gradient(135deg,#1db954,#121212);
+
+    color:white;
+
+    min-height:100vh;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
 
 }
+
+
+
+.container{
+
+    width:100%;
+
+    max-width:600px;
+
+    background:#1e1e1e;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    text-align:center;
+
+    box-shadow:0 0 25px rgba(0,0,0,.5);
+
+}
+
 
 
 h1{
 
-text-align:center;
-color:#1db954;
-margin-bottom:20px;
+    color:#1db954;
 
-}
-
-
-
-.search{
-
-display:flex;
-gap:10px;
+    margin-bottom:25px;
 
 }
 
@@ -49,10 +58,33 @@ gap:10px;
 
 input{
 
-flex:1;
-padding:12px;
-border:none;
-border-radius:10px;
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:10px;
+
+    font-size:16px;
+
+    margin-bottom:15px;
+
+}
+
+
+
+.buttons{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
 
 }
 
@@ -60,22 +92,41 @@ border-radius:10px;
 
 button{
 
-background:#1db954;
-color:white;
-border:none;
-padding:10px;
-border-radius:10px;
-cursor:pointer;
+    padding:13px 25px;
+
+    border:none;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    background:#1db954;
+
+    color:white;
+
+    font-weight:bold;
+
+    font-size:15px;
+
+    transition:.3s;
 
 }
 
 
 
-#lista{
+button:hover{
 
-margin-top:20px;
-display:grid;
-gap:15px;
+    transform:scale(1.05);
+
+    background:#159442;
+
+}
+
+
+
+#resultado{
+
+    margin-top:25px;
 
 }
 
@@ -83,115 +134,45 @@ gap:15px;
 
 .card{
 
-background:#222;
-padding:15px;
-border-radius:15px;
+    background:#292929;
+
+    padding:20px;
+
+    border-radius:12px;
 
 }
 
 
 
-.player{
+audio,
+video{
 
-position:fixed;
-bottom:0;
-left:0;
+    width:100%;
 
-width:100%;
-
-background:#000;
-
-padding:15px;
-
-text-align:center;
+    margin-top:15px;
 
 }
 
 
 
-audio{
+a{
 
-width:90%;
+    display:inline-block;
+
+    margin-top:15px;
+
+    color:#1db954;
+
+    font-weight:bold;
+
+    text-decoration:none;
 
 }
 
-</style>
 
 
-</head>
+a:hover{
 
+    text-decoration:underline;
 
-<body>
-
-
-<h1>🎵 Meu Player</h1>
-
-
-
-<div class="search">
-
-
-<input 
-id="busca"
-placeholder="Nome cantor ou link YouTube">
-
-
-
-<button onclick="pesquisar()">
-
-🔎
-
-</button>
-
-
-</div>
-
-
-
-
-<div id="lista"></div>
-
-
-
-
-
-<div class="player">
-
-
-<div id="titulo">
-
-Nenhuma música
-
-</div>
-
-
-<audio id="audio" controls></audio>
-
-
-<br>
-
-
-<button onclick="anterior()">
-
-⏮️
-
-</button>
-
-
-<button onclick="proxima()">
-
-⏭️
-
-</button>
-
-
-</div>
-
-
-
-<script src="/script.js"></script>
-
-
-</body>
-
-</html>
+}
