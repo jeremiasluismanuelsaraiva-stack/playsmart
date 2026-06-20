@@ -13,6 +13,7 @@ const titulo = document.getElementById("titulo");
 
 function render(){
 
+
 lista.innerHTML = "";
 
 
@@ -29,16 +30,12 @@ lista.innerHTML += `
 
 
 <button onclick="tocar(${i})">
-
 ▶️ Escutar
-
 </button>
 
 
 <button onclick="verVideo(${i})">
-
-🎬 Ver
-
+🎬 Assistir
 </button>
 
 
@@ -55,72 +52,17 @@ lista.innerHTML += `
 
 
 
-async function tocar(i){
-
-
-atual=i;
-
-
-titulo.innerHTML =
-"⏳ Preparando "+musicas[i].nome;
-
-
-
-const res = await fetch(
-
-"/api/baixar?url="+
-encodeURIComponent(musicas[i].url)+
-"&tipo=audio"
-
-);
-
-
-
-const data = await res.json();
-
-
-
-if(!data.sucesso){
-
-alert(data.erro);
-
-return;
-
-}
-
-
-
-audio.src = data.download;
-
-
-titulo.innerHTML =
-
-"🎵 "+musicas[i].nome+
-"<br>🎤 "+musicas[i].artista;
-
-
-
-audio.play();
-
-
-}
-
-
-
-
-
-
 async function pesquisar(){
 
 
-const q =
+const q = 
 document.getElementById("busca").value.trim();
 
 
 
 if(!q){
 
-alert("Digite artista ou música");
+alert("Digite música ou link");
 
 return;
 
@@ -129,7 +71,7 @@ return;
 
 
 lista.innerHTML =
-"⏳ Pesquisando...";
+"⏳ A pesquisar...";
 
 
 
@@ -138,7 +80,7 @@ try{
 
 const res = await fetch(
 
-"/api/search?q="+
+"/api/musica?q="+
 encodeURIComponent(q)
 
 );
@@ -151,7 +93,7 @@ const data = await res.json();
 
 if(!data.length){
 
-throw new Error("Nada encontrado");
+throw new Error("Nenhum resultado");
 
 }
 
@@ -180,6 +122,96 @@ lista.innerHTML =
 
 
 
+
+async function tocar(i){
+
+
+atual = i;
+
+
+
+titulo.innerHTML =
+"⏳ Preparando "+musicas[i].nome;
+
+
+
+try{
+
+
+const res = await fetch(
+
+"/api/baixar?url="+
+encodeURIComponent(musicas[i].url)+
+"&tipo=audio"
+
+);
+
+
+
+const data = await res.json();
+
+
+
+if(!data.sucesso){
+
+throw new Error(data.erro);
+
+}
+
+
+
+audio.src = data.download;
+
+
+
+titulo.innerHTML =
+
+"🎵 "+musicas[i].nome+
+"<br>🎤 "+musicas[i].artista;
+
+
+
+audio.play();
+
+
+
+}catch(e){
+
+
+alert(
+"❌ "+e.message
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+function verVideo(i){
+
+
+window.open(
+
+musicas[i].url,
+
+"_blank"
+
+);
+
+
+}
+
+
+
+
+
+
 function proxima(){
 
 
@@ -191,8 +223,8 @@ tocar(atual);
 
 }
 
-
 }
+
 
 
 
@@ -207,21 +239,5 @@ atual--;
 tocar(atual);
 
 }
-
-
-}
-
-
-
-
-
-function verVideo(i){
-
-
-window.open(
-musicas[i].url,
-"_blank"
-);
-
 
 }
