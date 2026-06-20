@@ -1,79 +1,101 @@
-// Imports
 const express = require("express");
-const { google } = require("googleapis");
 const fetch = require("node-fetch");
 const open = require("open").default;
+
 const app = express();
 const PORT = 3000;
 
-// Configurações das APIs
-const YOUTUBE_API_KEY = "SUA_CHAVE_GOOGLE"; // substitua pelo AIzaSy...
 const API_CYBERHOST = "https://api.cyberhost.online";
-const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a"; // substitua pelo cyber_...
+const API_KEY_CYBERHOST = "SUA_API_KEY_AQUI";
 
-// Servir frontend (HTML/JS/CSS)
 app.use(express.static("frontend"));
 
-// Função para buscar músicas no YouTube (Google API)
-async function buscarMusica(nome) {
-  const youtube = google.youtube("v3");
-  const res = await youtube.search.list({
-    key: YOUTUBE_API_KEY,
-    part: "snippet",
-    q: nome,
-    maxResults: 3
-  });
-  return res.data.items.map(item => ({
-    titulo: item.snippet.title,
-    canal: item.snippet.channelTitle,
-    url: `https://youtube.com/watch?v=${item.id.videoId}`
-  }));
+async function cyberPost(endpoint, body = {}) {
+    const res = await fetch(`${API_CYBERHOST}${endpoint}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            api_key: API_KEY_CYBERHOST,
+            ...body
+        })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.error || data.detail || data.status === false) {
+        throw new Error(
+            data.error ||
+            data.detail ||
+            data.message ||
+            "Erro na API CyberHost"
+        );
+    }
+
+    return data;
 }
 
-// Função para baixar áudio/vídeo (CyberHost API)
-async function baixarYoutube(url, tipo = "audio") {
-  const res = await fetch(`${API_CYBERHOST}/youtube/download`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      api_key: API_KEY_CYBERHOST,
-      url,
-      type: tipo,
-      format: tipo === "audio" ? "mp3" : "mp4",
-      quality: tipo === "video" ? "720" : undefined
-    })
-  });
+function montarArquivo(api, filePath) {
+    if (!filePath) return null;
 
-  const data = await res.json();
-  if (!data.file) throw new Error("Erro ao baixar via CyberHost");
-  return `${API_CYBERHOST}/youtube${data.file}`;
+    if (filePath.startsWith("http")) {
+        return filePath;
+    }
+
+    return `${API_CYBERHOST}/${api}${filePath}`;
 }
-
-// Rotas
-app.get("/buscar", async (req, res) => {
-  try {
-    const { q } = req.query;
-    const resultados = await buscarMusica(q);
-    res.json(resultados);
-  } catch (e) {
-    res.status(500).json({ erro: e.message });
-  }
-});
 
 app.get("/baixar", async (req, res) => {
-  try {
-    const { url, tipo } = req.query;
-    const link = await baixarYoutube(url, tipo || "audio");
-    res.json({ download: link });
-  } catch (e) {
-    res.status(500).json({ erro: e.message });
-  }
+    try {
+        const { url, tipo } = req.query;
+
+        if (!url) {
+            return res.status(400).json({
+                erro: "Informe o link do YouTube"
+            });
+        }
+
+        let data;
+
+        if (tipo === "video") {
+            data = await cyberPost("/youtube/download", {
+                url,
+                type: "video",
+                quality: "720"
+            });
+        } else {
+            data = await cyberPost("/youtube/download", {
+                url,
+                type: "audio",
+                format: "mp3"
+            });
+        }
+
+        if (!data.file) {
+            return res.status(400).json({
+                erro: "A CyberHost não retornou arquivo"
+            });
+        }
+
+        const download = montarArquivo("youtube", data.file);
+
+        res.json({
+            sucesso: true,
+            tipo: tipo || "audio",
+            download
+        });
+
+    } catch (e) {
+        res.status(500).json({
+            sucesso: false,
+            erro: e.message
+        });
+    }
 });
 
-// Iniciar servidor e abrir navegador automaticamente
 app.listen(PORT, () => {
-    console.log(`Servidor rodando em http://localhost:${PORT}`);
-    // abre o frontend direto no navegador
-    open(`http://localhost:${PORT}/index.html`);
-  });
-  
+    console.log(`Servidor iniciado: http://localhost:${PORT}`);
+
+    open(`http://localhost:${PORT}`);
+});
