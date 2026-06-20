@@ -1,14 +1,20 @@
-const fetch = require("node-fetch");
 
-const API_CYBERHOST = "https://api.cyberhost.online";
-const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
+const fetch=require("node-fetch");
 
 
-module.exports = async (req,res)=>{
+const API="https://api.cyberhost.online";
+
+const KEY="cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
+
+
+module.exports=async(req,res)=>{
+
 
 try{
 
-const q = req.query.q;
+
+let q=req.query.q;
+
 
 
 if(!q){
@@ -18,32 +24,34 @@ return res.json([]);
 }
 
 
-// É LINK?
+
+// se for link
+
 if(
-q.includes("youtube.com") ||
-q.includes("youtu.be")
+q.includes("youtu.be") ||
+q.includes("youtube.com")
 ){
 
 
-return res.json([
+return res.json([{
 
-{
-nome:"YouTube Link",
-artista:"Link enviado",
+nome:"YouTube",
+
+artista:"Link",
+
 url:q
+
+}]);
+
+
 }
 
-]);
 
 
-}
 
+let r=await fetch(
 
-// É PESQUISA
-
-const r = await fetch(
-
-`${API_CYBERHOST}/youtube/search`,
+API+"/youtube/search",
 
 {
 
@@ -57,7 +65,7 @@ headers:{
 
 body:JSON.stringify({
 
-api_key:API_KEY_CYBERHOST,
+api_key:KEY,
 
 query:q,
 
@@ -68,40 +76,37 @@ limit:10
 });
 
 
-const data = await r.json();
+let data=await r.json();
 
 
 
-const lista =
-data.results ||
-data.data ||
-[];
+let lista=data.results || data.data || [];
 
 
 
-const resultado = lista.map(x=>({
+res.json(
 
-nome:
-x.title || x.name,
+lista.map(x=>({
 
-artista:
-x.channel || "YouTube",
 
+nome:x.title || x.name,
+
+artista:x.channel || "YouTube",
 
 url:
 x.url ||
 x.link ||
-x.videoUrl ||
-x.webpage_url
-
-}));
+x.videoUrl
 
 
-res.json(resultado);
+}))
+
+);
 
 
 
 }catch(e){
+
 
 res.status(500).json({
 
@@ -109,7 +114,8 @@ erro:e.message
 
 });
 
+
 }
 
 
-};
+}
