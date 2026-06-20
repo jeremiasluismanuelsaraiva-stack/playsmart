@@ -3,6 +3,9 @@ console.log("SCRIPT CARREGADO");
 
 const resultado = document.getElementById("resultado");
 
+let historico = [];
+let atual = -1;
+
 
 
 async function baixar(tipo){
@@ -11,10 +14,9 @@ async function baixar(tipo){
 const url = document.getElementById("url").value.trim();
 
 
-
 if(!url){
 
-alert("Cole link YouTube, TikTok ou Facebook");
+alert("Cole um link");
 
 return;
 
@@ -39,10 +41,9 @@ try{
 
 const resposta = await fetch(
 
-"/api/baixar?url=" +
-encodeURIComponent(url) +
-"&tipo=" +
-tipo
+"/api/baixar?url="+
+encodeURIComponent(url)+
+"&tipo="+tipo
 
 );
 
@@ -51,32 +52,61 @@ tipo
 const texto = await resposta.text();
 
 
-
-console.log("RESPOSTA API:", texto);
-
-
-
-let data;
-
-
-try{
-
-data = JSON.parse(texto);
-
-}catch(e){
-
-throw new Error(texto);
-
-}
-
+const data = JSON.parse(texto);
 
 
 
 if(!data.sucesso){
 
-throw new Error(
-data.erro || "Erro desconhecido"
-);
+throw new Error(data.erro);
+
+}
+
+
+
+
+// guardar no histórico
+
+historico.push({
+
+url:url,
+
+download:data.download,
+
+tipo:tipo,
+
+nome:
+data.title ||
+data.titulo ||
+"Vídeo"
+
+});
+
+
+
+atual = historico.length - 1;
+
+
+
+mostrarPlayer(historico[atual]);
+
+
+
+}catch(e){
+
+
+resultado.innerHTML = `
+
+<div class="card">
+
+❌ ${e.message}
+
+</div>
+
+`;
+
+}
+
 
 }
 
@@ -84,24 +114,10 @@ data.erro || "Erro desconhecido"
 
 
 
-const titulo =
-data.title ||
-data.titulo ||
-"Vídeo";
+function mostrarPlayer(item){
 
 
-const cantor =
-data.artist ||
-data.artista ||
-"Desconhecido";
-
-
-
-
-
-
-
-if(tipo === "audio"){
+if(item.tipo==="audio"){
 
 
 resultado.innerHTML = `
@@ -109,39 +125,29 @@ resultado.innerHTML = `
 <div class="card">
 
 
-<h2>🎵 ${titulo}</h2>
+<h2>🎵 ${item.nome}</h2>
 
 
-<p>🎤 ${cantor}</p>
+<audio controls autoplay>
 
-
-
-<audio 
-controls 
-autoplay
-style="width:100%;">
-
-<source 
-src="${data.download}"
+<source src="${item.download}"
 type="audio/mpeg">
-
-Seu navegador não suporta áudio.
 
 </audio>
 
 
 
-<br><br>
+<br>
 
 
+<button onclick="anterior()">
+⏮️ Anterior
+</button>
 
-<a 
-href="${data.download}"
-target="_blank">
 
-⬇️ Baixar MP3
-
-</a>
+<button onclick="proximo()">
+⏭️ Próximo
+</button>
 
 
 </div>
@@ -150,23 +156,15 @@ target="_blank">
 
 
 
-}
-
-else{
-
+}else{
 
 
 resultado.innerHTML = `
 
-
 <div class="card">
 
 
-<h2>🎬 ${titulo}</h2>
-
-
-<p>🎤 ${cantor}</p>
-
+<h2>🎬 ${item.nome}</h2>
 
 
 
@@ -178,69 +176,54 @@ autoplay
 
 playsinline
 
-style="width:100%;"
-
-src="${data.download}">
-
-
-Seu navegador não suporta vídeo.
-
+src="${item.download}">
 
 </video>
 
 
 
-
-<br><br>
-
-
-
-<a 
-
-href="${data.download}"
-
-target="_blank">
-
-
-⬇️ Abrir Vídeo
-
-
-</a>
-
-
-
-</div>
-
-
-`;
-
-
-
-}
-
-
-
-
-
-}catch(e){
-
-
-
-resultado.innerHTML = `
-
-<div class="card">
-
-❌ Erro:
-
 <br>
 
-${e.message}
+
+<button onclick="anterior()">
+⏮️ Anterior
+</button>
+
+
+<button onclick="proximo()">
+⏭️ Próximo
+</button>
+
+
 
 </div>
 
 `;
 
+}
 
+
+
+}
+
+
+
+
+function proximo(){
+
+
+if(atual < historico.length - 1){
+
+atual++;
+
+mostrarPlayer(
+historico[atual]
+);
+
+
+}else{
+
+alert("Não existe próximo vídeo");
 
 }
 
@@ -249,6 +232,28 @@ ${e.message}
 
 
 
+
+
+function anterior(){
+
+
+if(atual > 0){
+
+atual--;
+
+mostrarPlayer(
+historico[atual]
+);
+
+
+}else{
+
+alert("É o primeiro vídeo");
+
+}
+
+
+}
 
 
 
@@ -258,7 +263,6 @@ function baixarAudio(){
 baixar("audio");
 
 }
-
 
 
 
