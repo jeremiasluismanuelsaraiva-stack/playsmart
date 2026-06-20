@@ -2,119 +2,125 @@ const fetch = require("node-fetch");
 
 
 const API_CYBERHOST = "https://api.cyberhost.online";
+
 const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
 
 
-async function cyberPost(endpoint, body={}){
+async function cyberPost(endpoint, body = {}) {
 
-const res = await fetch(
-`${API_CYBERHOST}${endpoint}`,
-{
-method:"POST",
-headers:{
-"Content-Type":"application/json"
-},
-body:JSON.stringify({
+    const res = await fetch(
+        `${API_CYBERHOST}${endpoint}`,
+        {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                api_key: API_KEY_CYBERHOST,
+                ...body
+            })
+        }
+    );
 
-api_key:API_KEY_CYBERHOST,
-...body
 
-})
-});
+    const data = await res.json();
 
-
-return await res.json();
-
+    return data;
 }
 
 
 
-module.exports = async (req,res)=>{
+module.exports = async (req, res) => {
+
+    try {
 
 
-try{
+        const { url, tipo } = req.query;
 
 
-const {url,tipo}=req.query;
+        if (!url) {
 
+            return res.json({
+                sucesso: false,
+                erro: "Sem link do YouTube"
+            });
 
-if(!url){
-
-return res.json({
-sucesso:false,
-erro:"Sem link"
-});
-
-}
-
-
-
-const data = await cyberPost(
-"/youtube/download",
-{
-
-url,
-
-type:
-tipo==="video"
-?"video"
-:"audio",
-
-format:
-tipo==="video"
-?"mp4"
-:"mp3",
-
-quality:"720"
-
-}
-);
+        }
 
 
 
-if(!data.file){
+        const data = await cyberPost(
+            "/youtube/download",
+            {
 
-return res.json({
-sucesso:false,
-erro:"CyberHost não retornou arquivo"
-});
+                url: url,
 
-}
-
-
-
-const link =
-data.file.startsWith("http")
-?
-data.file
-:
-`${API_CYBERHOST}/youtube${data.file}`;
+                type:
+                    tipo === "video"
+                    ? "video"
+                    : "audio",
 
 
+                format:
+                    tipo === "video"
+                    ? "mp4"
+                    : "mp3",
 
-res.json({
 
-sucesso:true,
+                quality: "720"
 
-download:link
-
-});
+            }
+        );
 
 
 
-}catch(e){
+        if (!data.file) {
+
+            return res.json({
+                sucesso:false,
+                erro:"CyberHost não retornou arquivo",
+                resposta:data
+            });
+
+        }
 
 
-res.json({
 
-sucesso:false,
-
-erro:e.message
-
-});
+        let link = data.file;
 
 
-}
+
+        if (!link.startsWith("http")) {
+
+            link =
+            `${API_CYBERHOST}/youtube${link}`;
+
+        }
 
 
-}
+
+        res.json({
+
+            sucesso:true,
+
+            download:link
+
+        });
+
+
+
+    } catch (e) {
+
+
+        res.json({
+
+            sucesso:false,
+
+            erro:e.message
+
+        });
+
+
+    }
+
+};
