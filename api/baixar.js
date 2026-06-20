@@ -16,45 +16,16 @@ module.exports=async(req,res)=>{
 try{
 
 
-let q=req.query.q;
+let url=req.query.url;
 
-
-
-if(!q)
-return res.json([]);
-
-
-
-
-// se for link
-
-if(
-q.includes("youtube.com") ||
-q.includes("youtu.be")
-){
-
-
-return res.json([{
-
-nome:"YouTube",
-
-artista:"Link",
-
-url:q
-
-}]);
-
-
-}
-
-
+let tipo=req.query.tipo;
 
 
 
 let r =
 await fetch(
 
-API+"/youtube/search",
+API+"/youtube/download",
 
 {
 
@@ -71,9 +42,21 @@ body:JSON.stringify({
 
 api_key:KEY,
 
-query:q,
+url:url,
 
-limit:10
+type:
+tipo==="video"
+?"video"
+:"audio",
+
+format:
+tipo==="video"
+?"mp4"
+:"mp3",
+
+
+quality:"720"
+
 
 })
 
@@ -88,48 +71,44 @@ await r.json();
 
 
 
-let lista =
-data.results ||
-data.data ||
-[];
+
+if(!data.file){
+
+return res.json({
+
+erro:"CyberHost sem ficheiro"
+
+});
+
+}
+
+
+
+
+let link =
+data.file.startsWith("http")
+?
+data.file
+:
+API+"/youtube"+data.file;
 
 
 
 
 
-res.json(
+res.json({
 
-lista.map(x=>({
+download:link
 
+});
 
-nome:
-x.title ||
-x.name ||
-"Sem título",
-
-
-artista:
-x.channel ||
-"YouTube",
-
-
-url:
-x.url ||
-x.link ||
-x.videoUrl
-
-
-}))
-
-
-);
 
 
 
 }catch(e){
 
 
-res.status(500).json({
+res.json({
 
 erro:e.message
 
