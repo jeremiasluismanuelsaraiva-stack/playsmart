@@ -4,10 +4,8 @@ console.log("SCRIPT CARREGADO");
 const resultado = document.getElementById("resultado");
 
 
+
 async function baixar(tipo){
-
-
-console.log("BOTAO CLICADO", tipo);
 
 
 const url = document.getElementById("url").value.trim();
@@ -28,7 +26,7 @@ resultado.innerHTML = `
 
 <div class="card">
 
-⏳ Processando música...
+⏳ A processar música...
 
 </div>
 
@@ -54,7 +52,7 @@ const texto = await resposta.text();
 
 
 
-console.log("RESPOSTA:", texto);
+console.log("RESPOSTA API:", texto);
 
 
 
@@ -65,12 +63,12 @@ try{
 
 data = JSON.parse(texto);
 
-
 }catch(e){
 
 throw new Error(texto);
 
 }
+
 
 
 
@@ -82,10 +80,11 @@ throw new Error(data.erro);
 
 
 
-const titulo = 
+const titulo =
 data.title ||
 data.titulo ||
-"🎵 Música YouTube";
+"YouTube";
+
 
 
 const cantor =
@@ -108,17 +107,15 @@ resultado.innerHTML = `
 <h2>🎵 ${titulo}</h2>
 
 
-<p>
-
-🎤 ${cantor}
-
-</p>
+<p>🎤 ${cantor}</p>
 
 
 
-<audio controls autoplay style="width:100%;margin-top:15px">
+<audio controls autoplay style="width:100%;">
 
-<source src="${data.download}" type="audio/mpeg">
+<source 
+src="${data.download}"
+type="audio/mpeg">
 
 Seu navegador não suporta áudio.
 
@@ -130,7 +127,9 @@ Seu navegador não suporta áudio.
 
 
 
-<a href="${data.download}" target="_blank">
+<a 
+href="${data.download}"
+target="_blank">
 
 ⬇️ Baixar MP3
 
@@ -148,23 +147,22 @@ Seu navegador não suporta áudio.
 
 resultado.innerHTML = `
 
+
 <div class="card">
 
 
 <h2>🎬 ${titulo}</h2>
 
 
-<p>
-
-🎤 ${cantor}
-
-</p>
+<p>🎤 ${cantor}</p>
 
 
 
 <video controls autoplay width="100%">
 
-<source src="${data.download}" type="video/mp4">
+<source
+src="${data.download}"
+type="video/mp4">
 
 Seu navegador não suporta vídeo.
 
@@ -176,7 +174,9 @@ Seu navegador não suporta vídeo.
 
 
 
-<a href="${data.download}" target="_blank">
+<a 
+href="${data.download}"
+target="_blank">
 
 ⬇️ Baixar MP4
 
@@ -185,32 +185,34 @@ Seu navegador não suporta vídeo.
 
 </div>
 
+
 `;
 
 }
 
 
-}catch(e){
 
+}catch(e){
 
 
 resultado.innerHTML = `
 
 <div class="card">
 
-❌ ${e.message}
+❌ Erro:
+
+${e.message}
 
 </div>
 
 `;
 
-
-
 }
 
 
 
 }
+
 
 
 
@@ -219,6 +221,7 @@ function baixarAudio(){
 baixar("audio");
 
 }
+
 
 
 
