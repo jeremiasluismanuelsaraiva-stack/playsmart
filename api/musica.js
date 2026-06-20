@@ -1,10 +1,13 @@
-
 const fetch=require("node-fetch");
 
 
-const API="https://api.cyberhost.online";
+const API =
+"https://api.cyberhost.online";
 
-const KEY="cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
+
+const KEY =
+"cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
+
 
 
 module.exports=async(req,res)=>{
@@ -17,19 +20,17 @@ let q=req.query.q;
 
 
 
-if(!q){
-
+if(!q)
 return res.json([]);
 
-}
 
 
 
 // se for link
 
 if(
-q.includes("youtu.be") ||
-q.includes("youtube.com")
+q.includes("youtube.com") ||
+q.includes("youtu.be")
 ){
 
 
@@ -49,7 +50,9 @@ url:q
 
 
 
-let r=await fetch(
+
+let r =
+await fetch(
 
 API+"/youtube/search",
 
@@ -62,6 +65,7 @@ headers:{
 "Content-Type":"application/json"
 
 },
+
 
 body:JSON.stringify({
 
@@ -76,11 +80,20 @@ limit:10
 });
 
 
-let data=await r.json();
+
+
+let data =
+await r.json();
 
 
 
-let lista=data.results || data.data || [];
+
+let lista =
+data.results ||
+data.data ||
+[];
+
+
 
 
 
@@ -89,9 +102,16 @@ res.json(
 lista.map(x=>({
 
 
-nome:x.title || x.name,
+nome:
+x.title ||
+x.name ||
+"Sem título",
 
-artista:x.channel || "YouTube",
+
+artista:
+x.channel ||
+"YouTube",
+
 
 url:
 x.url ||
@@ -100,6 +120,7 @@ x.videoUrl
 
 
 }))
+
 
 );
 
