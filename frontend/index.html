@@ -1,63 +1,112 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>🎵 Meu Player de Música</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #1db954, #191414);
-      color: #fff;
-      text-align: center;
-      padding: 20px;
-    }
-    h1 {
-      margin-bottom: 20px;
-    }
-    input {
-      padding: 10px;
-      width: 300px;
-      border-radius: 5px;
-      border: none;
-    }
-    button {
-      padding: 10px 15px;
-      margin: 5px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      background: #1db954;
-      color: #fff;
-      font-weight: bold;
-    }
-    button:hover {
-      background: #14833b;
-    }
-    ul {
-      list-style: none;
-      padding: 0;
-    }
-    li {
-      background: rgba(255,255,255,0.1);
-      margin: 10px;
-      padding: 15px;
-      border-radius: 8px;
-    }
-    .controls {
-      margin-top: 10px;
-    }
-    audio, video {
-      margin-top: 10px;
-      width: 80%;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouTube Downloader CyberHost</title>
+
+<style>
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#121212;
+color:#fff;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.container{
+width:100%;
+max-width:600px;
+background:#1e1e1e;
+padding:25px;
+border-radius:15px;
+box-shadow:0 0 20px rgba(0,0,0,.4);
+text-align:center;
+}
+
+h1{
+margin-bottom:20px;
+color:#1db954;
+}
+
+input{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+margin-bottom:15px;
+font-size:16px;
+}
+
+.buttons{
+display:flex;
+gap:10px;
+justify-content:center;
+flex-wrap:wrap;
+}
+
+button{
+padding:12px 20px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:15px;
+font-weight:bold;
+background:#1db954;
+color:#fff;
+}
+
+button:hover{
+opacity:.9;
+}
+
+#resultado{
+margin-top:20px;
+}
+
+.card{
+background:#2a2a2a;
+padding:15px;
+border-radius:10px;
+}
+
+a{
+color:#1db954;
+font-weight:bold;
+text-decoration:none;
+}
+</style>
 </head>
 <body>
-  <h1>🎵 Meu Player de Música</h1>
-  <input id="busca" placeholder="Digite o nome da música">
-  <button onclick="buscarMusica()">🔎 Buscar</button>
-  <ul id="resultados"></ul>
 
-  <script src="script.js"></script>
+<div class="container">
+
+<h1>🎵 YouTube Downloader</h1>
+
+<input
+id="url"
+type="text"
+placeholder="Cole o link do YouTube">
+
+<div class="buttons">
+<button onclick="baixarAudio()">🎵 MP3</button>
+<button onclick="baixarVideo()">🎬 MP4</button>
+</div>
+
+<div id="resultado"></div>
+
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
