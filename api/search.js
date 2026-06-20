@@ -1,25 +1,21 @@
 
 
+
 const fetch = require("node-fetch");
 
-const API_CYBERHOST = "https://api.cyberhost.online";
+const API_CYBERHOST="https://api.cyberhost.online";
 const API_KEY_CYBERHOST = "cyber_f857ee31300990f3451d1a6826f9913b74d52f0a";
 
 
-module.exports = async (req,res)=>{
+module.exports = async(req,res)=>{
 
 try{
 
-const q = req.query.q;
 
-if(!q){
-
-return res.json([]);
-
-}
+const q=req.query.q;
 
 
-const r = await fetch(
+const r=await fetch(
 `${API_CYBERHOST}/youtube/search`,
 {
 method:"POST",
@@ -29,64 +25,50 @@ headers:{
 body:JSON.stringify({
 
 api_key:API_KEY_CYBERHOST,
-
 query:q,
-
 limit:10
 
 })
 });
 
 
-const data = await r.json();
+const data=await r.json();
 
 
-const lista =
-data.results ||
-data.data ||
-[];
+const lista=data.results || data.data || [];
 
 
-
-const musicas = lista.map(x=>({
-
+const resposta=lista.map(x=>({
 
 nome:
-x.title ||
-x.name ||
-"Sem título",
+x.title || x.name,
 
 
 artista:
-x.channel ||
-x.artist ||
-"Desconhecido",
+x.channel || "YouTube",
 
 
+// AQUI é importante
 url:
 x.url ||
 x.videoUrl ||
-x.link
-
+x.link ||
+x.webpage_url
 
 }));
 
 
-
-res.json(musicas);
+res.json(resposta);
 
 
 
 }catch(e){
 
-
 res.status(500).json({
-
 erro:e.message
-
 });
 
-
 }
+
 
 };
