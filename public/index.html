@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>YouTube Downloader CyberHost</title>
+<title>🎵 Music Player</title>
 
 <style>
 
@@ -15,86 +16,105 @@ box-sizing:border-box;
 font-family:Arial;
 }
 
+
 body{
+
 background:#121212;
 color:white;
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
 padding:20px;
-}
 
-
-.container{
-width:100%;
-max-width:600px;
-background:#1e1e1e;
-padding:25px;
-border-radius:15px;
-text-align:center;
 }
 
 
 h1{
+
+text-align:center;
 color:#1db954;
 margin-bottom:20px;
+
+}
+
+
+.search{
+
+display:flex;
+gap:10px;
+justify-content:center;
 }
 
 
 input{
 
-width:100%;
+width:70%;
 padding:12px;
-border-radius:8px;
+border-radius:10px;
 border:none;
-font-size:16px;
-margin-bottom:15px;
 
 }
+
 
 
 button{
 
-padding:12px 20px;
-border:none;
-border-radius:8px;
-cursor:pointer;
 background:#1db954;
 color:white;
-font-weight:bold;
-margin:5px;
+border:none;
+padding:10px 15px;
+border-radius:10px;
+cursor:pointer;
 
 }
 
 
-button:hover{
-opacity:.8;
+
+#lista{
+
+margin-top:25px;
+
+display:grid;
+
+gap:15px;
+
 }
 
-
-#resultado{
-
-margin-top:20px;
-
-}
 
 
 .card{
 
-background:#292929;
+background:#222;
 padding:15px;
-border-radius:10px;
+border-radius:15px;
 
 }
 
 
-a{
 
-color:#1db954;
-text-decoration:none;
+audio,video{
+
+width:100%;
+margin-top:10px;
 
 }
+
+
+.player{
+
+position:fixed;
+
+bottom:0;
+left:0;
+
+width:100%;
+
+background:#000;
+
+padding:15px;
+
+text-align:center;
+
+}
+
+
 
 </style>
 
@@ -104,32 +124,111 @@ text-decoration:none;
 <body>
 
 
-<div class="container">
+<h1>🎵 Meu Player</h1>
 
 
-<h1>🎵 YouTube Downloader</h1>
+
+<div class="search">
 
 
-<input
-id="url"
-placeholder="Cole link do YouTube">
+<input id="busca"
+placeholder="Pesquisar artista ou música">
+
+
+<button onclick="pesquisar()">
+
+🔎
+
+</button>
+
+
+</div>
+
+
+
+
+<div id="lista">
+
+
+<div class="card">
+
+🎤 Matuê
+
+<br>
+
+<button onclick="tocarExemplo()">
+
+▶️ Escutar
+
+</button>
+
+
+</div>
+
+
+<div class="card">
+
+🎤 Teto
+
+<br>
+
+<button>
+
+▶️ Escutar
+
+</button>
+
+
+</div>
+
+
+
+<div class="card">
+
+🎤 WIU
+
+<br>
+
+<button>
+
+▶️ Escutar
+
+</button>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+<div class="player">
+
+
+<div id="titulo">
+
+Nenhuma música
+
+</div>
+
+
+<audio id="audio" controls></audio>
 
 
 <br>
 
 
-<button onclick="baixarAudio()">
-🎧 MP3
+<button onclick="anterior()">
+⏮️
 </button>
 
 
-<button onclick="baixarVideo()">
-🎬 MP4
+<button onclick="proxima()">
+⏭️
 </button>
-
-
-
-<div id="resultado"></div>
 
 
 </div>
