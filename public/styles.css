@@ -2,19 +2,14 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial;
+font-family:Arial, Helvetica, sans-serif;
 }
 
 
 body{
 
 background:
-linear-gradient(
-135deg,
-#020617,
-#000,
-#7f1d1d
-);
+radial-gradient(circle at top,#1e3a8a,#020617 50%,#000);
 
 color:white;
 
@@ -33,13 +28,18 @@ padding:20px;
 .container{
 
 width:100%;
-max-width:700px;
+max-width:750px;
 
-background:#020617;
+background:rgba(15,23,42,.9);
 
 padding:30px;
 
-border-radius:20px;
+border-radius:25px;
+
+box-shadow:
+0 0 40px #2563eb55;
+
+backdrop-filter:blur(10px);
 
 text-align:center;
 
@@ -49,11 +49,14 @@ text-align:center;
 
 h1{
 
+font-size:45px;
+
 color:#38bdf8;
 
-font-size:40px;
+text-shadow:
+0 0 20px #38bdf8;
 
-margin-bottom:20px;
+margin-bottom:25px;
 
 }
 
@@ -63,17 +66,32 @@ input{
 
 width:100%;
 
-padding:15px;
+padding:16px;
 
-margin:8px;
+margin:10px 0;
 
-border-radius:10px;
+border-radius:15px;
 
-background:#111827;
+border:1px solid #334155;
+
+outline:none;
+
+background:#020617;
 
 color:white;
 
 font-size:18px;
+
+}
+
+
+
+input:focus{
+
+border-color:#38bdf8;
+
+box-shadow:
+0 0 15px #38bdf8;
 
 }
 
@@ -83,19 +101,26 @@ button{
 
 padding:14px 25px;
 
-margin:5px;
+margin:8px;
 
-border:0;
+border:none;
 
-border-radius:10px;
+border-radius:15px;
 
-background:#2563eb;
+background:
+linear-gradient(
+45deg,
+#2563eb,
+#7c3aed
+);
 
 color:white;
 
-font-size:18px;
+font-size:17px;
 
 cursor:pointer;
+
+transition:.3s;
 
 }
 
@@ -103,39 +128,130 @@ cursor:pointer;
 
 button:hover{
 
-background:#dc2626;
+transform:scale(1.05);
+
+box-shadow:
+0 0 20px #2563eb;
 
 }
+
 
 
 
 .card{
 
-background:#111827;
+background:
+linear-gradient(
+145deg,
+#111827,
+#020617
+);
 
 padding:20px;
 
 margin-top:20px;
 
-border-radius:15px;
+border-radius:20px;
 
-font-size:20px;
+border:1px solid #334155;
+
+animation:
+aparecer .3s ease;
 
 }
 
 
 
-audio,video{
+@keyframes aparecer{
+
+from{
+
+opacity:0;
+transform:translateY(20px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+
+
+
+audio,
+video{
 
 width:100%;
+
+margin-top:20px;
+
+border-radius:15px;
+
+}
+
+
+
+
+#nomeMusica{
+
+font-size:25px;
+
+color:#22d3ee;
 
 margin-top:15px;
 
 }
 
 
+
+#nomeArtista{
+
+color:#94a3b8;
+
+margin-top:5px;
+
+}
+
+
+
 #historico{
 
-margin-top:25px;
+margin-top:30px;
+
+text-align:left;
+
+}
+
+
+
+
+@media(max-width:600px){
+
+
+.container{
+
+padding:20px;
+
+}
+
+
+h1{
+
+font-size:32px;
+
+}
+
+
+button{
+
+width:100%;
+
+}
+
 
 }
